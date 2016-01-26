@@ -41,7 +41,7 @@ extern crate serialize;
 use serialize::{json};
 
 //command line options
-//pssh [push | pull | run] <command | filepath | filename> <server_json>
+//psshr [push | pull | run] <command | filepath | filename> <server_json>
 
 //Define our Server structure
 //Make it JSON decodable
