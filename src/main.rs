@@ -118,7 +118,7 @@ fn parallel(servers: Vec<Server>){
 fn main(){
 	//Just A Server for testing
 	let host = Server::new("root",
-						   "Reuters1",
+						   "password",
 						   "172.18.119.89",
 						   "ls -latr");
 
