@@ -1,0 +1,5 @@
+[package]
+name = "psshr"
+version = "0.1.0"
+authors = ["Alexander Templeton <blakmatr@gmail.com>"]
+ssh2 = "0.2.10"
