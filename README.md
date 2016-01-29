@@ -2,7 +2,7 @@
 Parallel SSH in Rust. Inspired by Python Fabric.
 
 ```
-$> psshr [push | pull | run] <command | filepath | filename> <server_json>
+$> psshr [push | pull | run] <command | filepath | filename> <server_json_file>
 >>> [hostname] executing <command>
 >>> [hostname] <output>
 ```
