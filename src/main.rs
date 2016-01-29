@@ -42,7 +42,7 @@ extern crate serialize;
 use serialize::{json};
 
 //command line options
-//psshr [push | pull | run] <command | filepath | filename> <server_json>
+//psshr [push | pull | run] <command | filepath | filename> <server_json_filepath>
 
 //Define our Server structure
 //Make it JSON decodable
@@ -85,10 +85,9 @@ fn connect(server: Server) -> $str {
 	//println!("{}", channel.exit_status().unwrap());
 }
 
-fn populate(command: string, path: string) /*-> Vec<Server>*/ {
+fn populate(command: string, path: string) -> Vec<Server> {
 	//Initialize Vector of Structs
-	let mut vec_Servers = Vec! [];
-	for item in serverList
+	let mut vecServers = Vec! [];
 	
 	//open <path.json> file with server information
 	let mut file = match File::open(&path) {
@@ -97,6 +96,10 @@ fn populate(command: string, path: string) /*-> Vec<Server>*/ {
 		Err(why) => panic!("couldn't open {}: {}", display, Error::description(&why)),
 		Ok(file) => file,
 	};
+	
+	for item in serverList {
+		vecServers.Push(Server::new(Json::Deserialize(item)))
+	}
 
     // Read the file contents into ... whatever Rust uses for JSON?
     //let mut s = String::new();
@@ -104,10 +107,7 @@ fn populate(command: string, path: string) /*-> Vec<Server>*/ {
 	//parse JSON into list of Server objects
 	/*
 	for record in json[]{
-		vecServers.push(Server::new(json[record][0], 
-			                        json[record][1], 
-			                        json[record][2], 
-			                        json[record][3]);
+		vecServers.push(Server::new(json[record][0], json[record][1], json[record][2], json[record][3]);
 		)
 	}
 	*/
@@ -134,21 +134,22 @@ fn main(){
 		argvec.Push(argument)
 
 	//First argument is command 
-	if (argvec.Pull() == "Run") {
+	if argvec.Pull() == "Run" {
 
-		//then second argument is filename
+		//second argument is command
+		command = argvec.Pull()
+		
+		//then third argument is filename
 		filename = argvec.Pull()
-
-		//Just an example `Server` for testing
-		let host = Server::new("root",
-						   "password",
-						   "172.18.119.89",
-						   "ls -latr");
-
-		//initialize location of server_list document
 		let path = Path::new(filename);
+		//Just an example `Server` for testing
+		let host = Server::new("root", "password", "172.18.119.89", "ls -latr");
 
 		parallel(populate(command))
+	} else if argvec.Pull() == "Push" {
+		//
+	} else if argvec.Pull() == "Pull" {
+		//pass
 	}
 }
 
