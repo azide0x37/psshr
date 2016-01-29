@@ -18,6 +18,7 @@ Complexity:	O(n)
 
 //Stationkeeping imports
 use std::error::Error;
+use std::env;
 
 //File and IO imports
 use std::fs::File;
@@ -54,19 +55,19 @@ struct Server {
 }
 
 impl Server {
-	fn new(username: string,
-		   password: string,
-		   hostip: string,
-		   command: string) {
-		Server { username: username,
-				 password: password,
-				 hostip: hostip,
-				 command: command }
-
+	fn new(username: &str,
+		   password: &str,
+		   hostip: &str,
+		   command: &str) -> 
+		Server {
+			username: username.to_string(),
+			password: password.to_string(),
+			hostip: hostip.to_string(),
+			command: command.to_string(),
 	}
 }
 
-fn connect(command: string, server: Server) {
+fn connect(server: Server) -> $str {
 	// Connect to the local SSH server
 	let tcp = TcpStream::connect(server.hostip).unwrap();
 	let mut sess = Session::new().unwrap();
@@ -74,17 +75,20 @@ fn connect(command: string, server: Server) {
 	sess.userauth_password(server.username, server.password).unwrap();
 	let mut channel = sess.channel_session().unwrap();
 
-	//Execute our command, pass result to string
+	//Execute our command, pass result to string, return
 	channel.exec(server.command).unwrap();
 	let mut s = String::new();
 	channel.read_to_string(&mut s).unwrap();
-	println!("{}", s);
-	println!("{}", channel.exit_status().unwrap());
+	
+	//Print for testing
+	//println!("{}", s);
+	//println!("{}", channel.exit_status().unwrap());
 }
 
 fn populate(command: string, path: string) /*-> Vec<Server>*/ {
 	//Initialize Vector of Structs
-	let mut vec_Servers = Vec::new();
+	let mut vec_Servers = Vec! [];
+	for item in serverList
 	
 	//open <path.json> file with server information
 	let mut file = match File::open(&path) {
@@ -99,9 +103,14 @@ fn populate(command: string, path: string) /*-> Vec<Server>*/ {
 
 	//parse JSON into list of Server objects
 	/*
-	for item in len(objects_in_json) {
-			vec_Servers.push(convert_json_to_struct(item));
-	}*/
+	for record in json[]{
+		vecServers.push(Server::new(json[record][0], 
+			                        json[record][1], 
+			                        json[record][2], 
+			                        json[record][3]);
+		)
+	}
+	*/
 
 	//return Vec of server objects
 }
@@ -111,20 +120,35 @@ fn parallel(servers: Vec<Server>){
 
 	//spawn thread for each server
 	for server in servers {
-		threads.push(thread::spawn(connect(server)))
+		threads.push(thread::spawn(move || {
+			connect(server); }
+			);
+		);
 	}
 }
 
 fn main(){
-	//Just A Server for testing
-	let host = Server::new("root",
+	//Pull Arguments from stdin
+	let argvec = vec![]
+	for argument in env::Args()
+		argvec.Push(argument)
+
+	//First argument is command 
+	if (argvec.Pull() == "Run") {
+
+		//then second argument is filename
+		filename = argvec.Pull()
+
+		//Just an example `Server` for testing
+		let host = Server::new("root",
 						   "password",
 						   "172.18.119.89",
 						   "ls -latr");
 
-	//initialize location of server_list document
-	let path = Path::new(filename);
+		//initialize location of server_list document
+		let path = Path::new(filename);
 
-	parallel(populate(command))
+		parallel(populate(command))
+	}
 }
 
